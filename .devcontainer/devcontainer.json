@@ -12,7 +12,7 @@
 			"installGradle": "false"
 		},
 		"ghcr.io/devcontainers/features/docker-in-docker:3.1.0": {
-			"version": "20",
+			"version": "latest",
 			"moby": "false",
 			"dockerDashComposeVersion": "v2"
 		},
