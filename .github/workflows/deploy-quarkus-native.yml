@@ -8,6 +8,9 @@ on:
       - .github/workflows/*.yml
       - quarkus-app/**
 
+permissions:
+  contents: read
+
 env:
   # Replace with your registry URL
   REGISTRY_URL: crjavaruntimessinedied.azurecr.io

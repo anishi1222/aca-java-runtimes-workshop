@@ -14,6 +14,9 @@ on:
       - quarkus-app/**
 # end::adocSkipPath[]
 
+permissions:
+  contents: read
+
 # Only allow one workflow to run at a time
 concurrency:
   group: deployment
