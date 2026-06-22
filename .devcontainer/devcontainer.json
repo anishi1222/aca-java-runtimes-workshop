@@ -2,7 +2,7 @@
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.245.0/containers/java
 {
 	"name": "Java",
-	"image": "mcr.microsoft.com/vscode/devcontainers/java:0-17-bullseye",
+	"image": "mcr.microsoft.com/devcontainers/java:3.0.7-25-trixie",
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	"features": {
@@ -11,7 +11,7 @@
 			"installMaven": "true",
 			"installGradle": "false"
 		},
-		"ghcr.io/devcontainers/features/docker-in-docker:1": {
+		"ghcr.io/devcontainers/features/docker-in-docker:3.1.0": {
 			"version": "20",
 			"moby": "false",
 			"dockerDashComposeVersion": "v2"
