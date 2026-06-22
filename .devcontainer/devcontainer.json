@@ -2,7 +2,7 @@
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.245.0/containers/java
 {
 	"name": "Java",
-	"image": "mcr.microsoft.com/devcontainers/java:3.0.7-25-trixie",
+	"image": "mcr.microsoft.com/devcontainers/java:25",
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	"features": {
