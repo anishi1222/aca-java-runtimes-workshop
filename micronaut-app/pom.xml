@@ -161,6 +161,7 @@
       <plugin>
         <groupId>io.micronaut.maven</groupId>
         <artifactId>micronaut-maven-plugin</artifactId>
+        <extensions>false</extensions>
       </plugin>
       
       <plugin>
