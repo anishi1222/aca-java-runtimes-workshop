@@ -9,6 +9,10 @@ on:
       - springboot-app/**
       - quarkus-app/**
 
+permissions:
+  contents: read
+  packages: write
+
 env:
   REGISTRY_URL: ghcr.io
   PROJECT: azure/aca-java-runtimes-workshop
