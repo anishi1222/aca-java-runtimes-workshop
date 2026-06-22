@@ -138,7 +138,7 @@ include::{project-root}/micronaut-app/src/main/resources/application.yml[]
 
 Now, to make sure that the application works as expected, we need to write some tests.
 Remember that the tests need a PostgreSQL database to run.
-For that, we need to configure Testcontainers in a separate class (`MicronautAppTest`)
+The test configuration uses Testcontainers' JDBC driver to start PostgreSQL automatically.
 Open the `MicronautAppTest` class under the `src/test/java/io/containerapps/javaruntime/workshop/micronaut` folder and add the following code.
 
 [[micronaut-listing-test]]

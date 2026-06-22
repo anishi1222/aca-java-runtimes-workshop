@@ -1,4 +1,18 @@
 datasources:
   default:
-    url: jdbc:tc:postgresql:14:///postgres
+    dialect: POSTGRES
+    url: jdbc:tc:postgresql:14-alpine://testcontainers/postgres
+    username: postgres
+    password: password
     driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+jpa:
+  default:
+    entity-scan:
+      packages: 'io.containerapps.javaruntime.workshop.micronaut'
+    properties:
+      hibernate:
+        bytecode:
+          provider: none
+        hbm2ddl:
+          auto: create-drop
+        show_sql: true
