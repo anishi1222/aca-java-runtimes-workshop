@@ -31,7 +31,7 @@ Let's install GraalVM first and then build the native images.
 
 We're going to use GraalVM Community Edition, which is free to use.
 
-In order to use GraalVM, you will need to set it up for Java {jdk-version} using the instructions available at https://www.graalvm.org/22.3/docs/getting-started/#install-graalvm[https://www.graalvm.org/22.3/docs/getting-started/#install-graalvm].
+In order to use GraalVM, you will need to set it up for Java {jdk-version} using the instructions available at https://www.graalvm.org/latest/docs/getting-started/#install-graalvm[https://www.graalvm.org/latest/docs/getting-started/#install-graalvm].
 
 [NOTE]
 ====
@@ -42,7 +42,7 @@ As you will probably need to set up the `JAVA_HOME` and the `PATH` environment v
 
 [source,shell]
 ----
-alias graalvm="export JAVA_HOME=/workspaces/java-runtimes-workshop/graalvm-ce-java17-22.3.1 && export PATH=/workspaces/java-runtimes-workshop/graalvm-ce-java17-22.3.1bin:$PATH && java -version"
+alias graalvm="export JAVA_HOME=/path/to/graalvm-jdk-25 && export PATH=$JAVA_HOME/bin:$PATH && java -version"
 ----
 
 === GitHub Actions setup
@@ -138,7 +138,7 @@ Go to the `micronaut-app` directory and execute the following command:
 
 [source,shell]
 ----
-mvn package -Dpackaging=native-image
+mvn -Pnative native:compile
 ----
 
 In your `target` folder, this should create a binary called `./target/micronaut-app`.
@@ -260,5 +260,5 @@ image::../assets/java-runtimes-dashboard-native.png[Screenshot of the Java Runti
 
 [NOTE]
 ====
-Additional telemetry can be enabled using Application Insights for Spring Boot Native applications. You can read more about it on the https://github.com/Azure/azure-sdk-for-java/tree/main/sdk/spring/spring-cloud-azure-starter-monitor[spring-cloud-azure-starter-monitor] repository.
+Azure Monitor Application Insights telemetry is enabled through application dependencies for the Quarkus, Micronaut, and Spring Boot applications. Set `APPLICATIONINSIGHTS_CONNECTION_STRING` before starting an application to send telemetry without attaching a Java agent.
 ====

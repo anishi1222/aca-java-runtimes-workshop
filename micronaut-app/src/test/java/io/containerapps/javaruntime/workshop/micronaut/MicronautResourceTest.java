@@ -62,12 +62,12 @@ class MicronautResourceTest {
 // tag::adocTestCPU[]
     @Test
     public void testCpuWithDBAndDescEndpoint() {
-        given().param("iterations", 1).param("db", true).param("desc", "Java17")
+        given().param("iterations", 1).param("db", true).param("desc", "Java25")
           .when().get(basePath + "/cpu")
           .then()
             .statusCode(200)
             .body(startsWith("Micronaut: CPU consumption is done with"))
-            .body(not(containsString("Java17")))
+            .body(not(containsString("Java25")))
             .body(endsWith("The result is persisted in the database."));
     }
 // end::adocTestCPU[]
@@ -95,12 +95,12 @@ class MicronautResourceTest {
 // tag::adocTestMemory[]
     @Test
     public void testMemoryWithDBAndDescEndpoint() {
-        given().param("bites", 1).param("db", true).param("desc", "Java17")
+        given().param("bites", 1).param("db", true).param("desc", "Java25")
           .when().get(basePath + "/memory")
           .then()
             .statusCode(200)
             .body(startsWith("Micronaut: Memory consumption is done with"))
-            .body(not(containsString("Java17")))
+            .body(not(containsString("Java25")))
             .body(endsWith("The result is persisted in the database."));
     }
 // end::adocTestMemory[]

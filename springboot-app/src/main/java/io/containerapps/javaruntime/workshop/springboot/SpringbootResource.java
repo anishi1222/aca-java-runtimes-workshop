@@ -49,7 +49,7 @@ public class SpringbootResource {
      * {@code curl 'localhost:8703/springboot/cpu'}
      * {@code curl 'localhost:8703/springboot/cpu?iterations=10'}
      * {@code curl 'localhost:8703/springboot/cpu?iterations=10&db=true'}
-     * {@code curl 'localhost:8703/springboot/cpu?iterations=10&db=true&desc=java17'}
+     * {@code curl 'localhost:8703/springboot/cpu?iterations=10&db=true&desc=java25'}
      *
      * @param iterations the number of iterations to run (times 20,000).
      * @return the result
@@ -100,7 +100,7 @@ public class SpringbootResource {
      * {@code curl 'localhost:8703/springboot/memory'}
      * {@code curl 'localhost:8703/springboot/memory?bites=10'}
      * {@code curl 'localhost:8703/springboot/memory?bites=10&db=true'}
-     * {@code curl 'localhost:8703/springboot/memory?bites=10&db=true&desc=java17'}
+     * {@code curl 'localhost:8703/springboot/memory?bites=10&db=true&desc=java25'}
      *
      * @param bites the number of megabytes to eat
      * @return the result.

@@ -236,9 +236,9 @@ In another terminal you can execute the following `curl` commands to invoke the 
 ----
 curl 'localhost:8703/springboot'
 
-curl 'localhost:8703/springboot/cpu?iterations=10&db=true&desc=java17'
+curl 'localhost:8703/springboot/cpu?iterations=10&db=true&desc=java25'
 
-curl 'localhost:8703/springboot/memory?bites=10&db=true&desc=java17'
+curl 'localhost:8703/springboot/memory?bites=10&db=true&desc=java25'
 ----
 
 You can change the parameters to see how the application behaves.

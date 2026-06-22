@@ -77,21 +77,18 @@
 #   accessed directly. (example: "foo.example.com,bar.example.com")
 #
 ###
-FROM registry.access.redhat.com/ubi8/openjdk-17:1.18
+FROM --platform=linux/amd64 eclipse-temurin:25-jre-alpine
 
-ENV LANGUAGE='en_US:en'
-
+RUN addgroup -S quarkus && adduser -S quarkus -G quarkus
+WORKDIR /work/
 
 # We make four distinct layers so if there are application changes the library layers can be re-used
-COPY --chown=185 target/quarkus-app/lib/ /deployments/lib/
-COPY --chown=185 target/quarkus-app/*.jar /deployments/
-COPY --chown=185 target/quarkus-app/app/ /deployments/app/
-COPY --chown=185 target/quarkus-app/quarkus/ /deployments/quarkus/
+COPY --chown=quarkus:quarkus target/quarkus-app/lib/ /work/lib/
+COPY --chown=quarkus:quarkus target/quarkus-app/*.jar /work/
+COPY --chown=quarkus:quarkus target/quarkus-app/app/ /work/app/
+COPY --chown=quarkus:quarkus target/quarkus-app/quarkus/ /work/quarkus/
 
 EXPOSE 8701
-USER 185
-ENV JAVA_OPTS_APPEND="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
-ENV JAVA_APP_JAR="/deployments/quarkus-run.jar"
+USER quarkus:quarkus
 
-ENTRYPOINT [ "/opt/jboss/container/java/run/run-java.sh" ]
-
+ENTRYPOINT ["java", "-Dquarkus.http.host=0.0.0.0", "-Djava.util.logging.manager=org.jboss.logmanager.LogManager", "-jar", "/work/quarkus-run.jar"]

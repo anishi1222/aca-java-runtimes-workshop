@@ -47,7 +47,7 @@ public class MicronautResource {
      * {@code curl 'localhost:8702/micronaut/cpu'}
      * {@code curl 'localhost:8702/micronaut/cpu?iterations=10'}
      * {@code curl 'localhost:8702/micronaut/cpu?iterations=10&db=true'}
-     * {@code curl 'localhost:8702/micronaut/cpu?iterations=10&db=true&desc=java17'}
+     * {@code curl 'localhost:8702/micronaut/cpu?iterations=10&db=true&desc=java25'}
      *
      * @param iterations the number of iterations to run (times 20,000).
      * @return the result
@@ -98,7 +98,7 @@ public class MicronautResource {
      * {@code curl 'localhost:8702/micronaut/memory'}
      * {@code curl 'localhost:8702/micronaut/memory?bites=10'}
      * {@code curl 'localhost:8702/micronaut/memory?bites=10&db=true'}
-     * {@code curl 'localhost:8702/micronaut/memory?bites=10&db=true&desc=java17'}
+     * {@code curl 'localhost:8702/micronaut/memory?bites=10&db=true&desc=java25'}
      *
      * @param bites the number of megabytes to eat
      * @return the result.

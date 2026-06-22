@@ -2,7 +2,7 @@
 Antonio Goncalves, Julien Dubois, Yohan Lasorsa
 
 // Workshop attributes
-:jdk-version: 17
+:jdk-version: 25
 :maven-version: 3.9.x
 :docker-version: 20.x
 :workshop-url: https://aka.ms/java-runtimes

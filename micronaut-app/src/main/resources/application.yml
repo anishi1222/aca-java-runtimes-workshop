@@ -1,6 +1,6 @@
 micronaut:
   application:
-    name: MicronautApp
+    name: micronaut-app
   server:
     port: 8702
     thread-selection: IO
@@ -25,3 +25,6 @@ jpa:
           provider: none
         hbm2ddl:
           auto: none
+applicationinsights:
+  connection:
+    string: ${APPLICATIONINSIGHTS_CONNECTION_STRING:}

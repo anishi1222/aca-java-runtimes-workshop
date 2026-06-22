@@ -23,7 +23,7 @@ jobs:
       - uses: graalvm/setup-graalvm@v1
         with:
           version: 'latest'
-          java-version: '17'
+          java-version: '25'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Log in to container registry
@@ -34,7 +34,7 @@ jobs:
           password: ${{ secrets.REGISTRY_PASSWORD }}
       - name: Build micronaut-app with GraalVM
         run: |
-          cd micronaut-app && ./mvnw package -Dpackaging=native-image
+          cd micronaut-app && ./mvnw -Pnative native:compile
       - name: Build micronaut-app native Docker image
         uses: docker/build-push-action@v4
         with:

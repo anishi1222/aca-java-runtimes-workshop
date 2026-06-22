@@ -38,10 +38,7 @@ You can create a native executable using:
 ./mvnw package -Dnative
 ```
 
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using: 
-```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
-```
+Use a GraalVM Java 25 distribution with Native Image installed when building locally.
 
 You can then execute your native executable with: `./target/quarkus-app-1.0.0-SNAPSHOT-runner`
 

@@ -1,4 +1,4 @@
-FROM ubuntu:22.10
+FROM ubuntu:24.04
 WORKDIR /work/
 RUN chown 1001 /work \
     && chmod "g+rwX" /work \

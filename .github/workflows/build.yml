@@ -27,7 +27,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'microsoft'
-          java-version: '17'
+          java-version: '25'
           cache: 'maven'
 
       - name: Log in to container registry
@@ -58,7 +58,7 @@ jobs:
         uses: graalvm/setup-graalvm@v1
         with:
           version: 'latest'
-          java-version: '17'
+          java-version: '25'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -70,7 +70,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build quarkus-app with GraalVM
-        run: cd quarkus-app && ./mvnw -Pnative package -Dquarkus.native.container-build=true
+        run: cd quarkus-app && ./mvnw -Pnative package
 
       - name: Build quarkus-app native Docker image
         uses: docker/build-push-action@v4
@@ -90,7 +90,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'microsoft'
-          java-version: '17'
+          java-version: '25'
           cache: 'maven'
 
       - name: Log in to container registry
@@ -121,7 +121,7 @@ jobs:
         uses: graalvm/setup-graalvm@v1
         with:
           version: 'latest'
-          java-version: '17'
+          java-version: '25'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -133,7 +133,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build micronaut-app with GraalVM
-        run: cd micronaut-app && ./mvnw package -Dpackaging=native-image
+        run: cd micronaut-app && ./mvnw -Pnative native:compile
 
       - name: Build micronaut-app native Docker image
         uses: docker/build-push-action@v4
@@ -153,7 +153,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'microsoft'
-          java-version: '17'
+          java-version: '25'
           cache: 'maven'
 
       - name: Log in to container registry
@@ -188,7 +188,7 @@ jobs:
         uses: graalvm/setup-graalvm@v1
         with:
           version: 'latest'
-          java-version: '17'
+          java-version: '25'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 

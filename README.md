@@ -34,7 +34,7 @@ curl 'localhost:8702/micronaut'   # Invokes the hello endpoint
 
 To build a native application (you need GraalVM installed):
 ```shell
-mvn package -Dpackaging=native-image
+mvn -Pnative native:compile
 ./target/micronaut-app
 ```
 
@@ -63,6 +63,8 @@ To build a Docker image with the native application (you need to build the nativ
 ```shell
 docker build -t springboot-app-native -f src/main/docker/Dockerfile.native .
 ```
+
+To send telemetry to Azure Monitor Application Insights without a Java agent, set `APPLICATIONINSIGHTS_CONNECTION_STRING` before starting any of the three applications.
 
 ## Contributing
 

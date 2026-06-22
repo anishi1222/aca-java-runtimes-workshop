@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 eclipse-temurin:19-jre-alpine
+FROM --platform=linux/amd64 eclipse-temurin:25-jre-alpine
 RUN addgroup -S micronaut && adduser -S micronaut -G micronaut
 USER micronaut:micronaut
 COPY target/micronaut-app-*.jar micronaut-app.jar
