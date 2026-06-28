@@ -1,0 +1,14 @@
+{
+  "project-version": "1.0",
+  "meta": {
+    "short_title": "Java Runtimes Workshop",
+    "contacts": ["@agoncal", "@juliendubois", "@sinedied"],
+    "description": "Learn about various Java runtimes performance on Azure. You'll create microservices with Quarkus, Spring Boot and Micronaut, deploy them on Azure Container Apps using a GitHub Actions CI/CD pipeline and compare their performance.",
+    "tags": "java, containers, azure, performance, runtime, quarkus, spring, micronaut, graalvm, docker, github actions, container apps, microservices",
+    "level": "beginner",
+    "duration_minutes": 180,
+    "audience": "students, devs",
+    "banner_url": "assets/banner.jpg",
+    "sections_title": ["Introduction"]
+  }
+}
