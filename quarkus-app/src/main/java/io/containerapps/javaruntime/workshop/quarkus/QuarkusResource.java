@@ -8,6 +8,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import java.lang.System.Logger;
+import java.util.Arrays;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;
@@ -56,40 +57,23 @@ public class QuarkusResource {
 // tag::adocMethodCPU[]
     @GET
     @Path("/cpu")
-    public String cpu(@QueryParam("iterations") @DefaultValue("10") Long iterations,
-                      @QueryParam("db") @DefaultValue("false") Boolean db,
+    public String cpu(@QueryParam("iterations") @DefaultValue("10") long iterations,
+                      @QueryParam("db") @DefaultValue("false") boolean db,
                       @QueryParam("desc") String desc) {
         LOGGER.log(INFO, "Quarkus: cpu: {0} {1} with desc {2}", iterations, db, desc);
-        Long iterationsDone = iterations;
+        var start = Instant.now();
 
-        Instant start = Instant.now();
-        if (iterations == null) {
-            iterations = 20000L;
-        } else {
-            iterations *= 20000;
-        }
         // tag::adocAlgoCPU[]
-        while (iterations > 0) {
-            if (iterations % 20000 == 0) {
-                try {
-                    Thread.sleep(20);
-                } catch (InterruptedException ie) {
-                }
-            }
-            iterations--;
-        }
+        consumeCpu(iterations * 20_000);
         // end::adocAlgoCPU[]
+        var duration = Duration.between(start, Instant.now());
 
         if (db) {
-            Statistics statistics = new Statistics();
-            statistics.type = Type.CPU;
-            statistics.parameter = iterations.toString();
-            statistics.duration = Duration.between(start, Instant.now());
-            statistics.description = desc;
-            repository.persist(statistics);
+            repository.persist(statistics(Type.CPU, Long.toString(iterations), duration, desc));
         }
 
-        String msg = "Quarkus: CPU consumption is done with " + iterationsDone + " iterations in " + Duration.between(start, Instant.now()).getNano() + " nano-seconds.";
+        var msg = "Quarkus: CPU consumption is done with %d iterations in %d nano-seconds."
+            .formatted(iterations, duration.toNanos());
         if (db) {
             msg += " The result is persisted in the database.";
         }
@@ -110,36 +94,28 @@ public class QuarkusResource {
 // tag::adocMethodMemory[]
     @GET
     @Path("/memory")
-    public String memory(@QueryParam("bites") @DefaultValue("10") Integer bites,
-                         @QueryParam("db") @DefaultValue("false") Boolean db,
+    public String memory(@QueryParam("bites") @DefaultValue("10") int bites,
+                         @QueryParam("db") @DefaultValue("false") boolean db,
                          @QueryParam("desc") String desc) {
         LOGGER.log(INFO, "Quarkus: memory: {0} {1} with desc {2}", bites, db, desc);
 
-        Instant start = Instant.now();
-        if (bites == null) {
-            bites = 1;
-        }
+        var start = Instant.now();
         // tag::adocAlgoMemory[]
-        HashMap hunger = new HashMap<>();
+        HashMap<Integer, byte[]> hunger = new HashMap<>();
         for (int i = 0; i < bites * 1024 * 1024; i += 8192) {
-            byte[] bytes = new byte[8192];
+            var bytes = new byte[8192];
+            Arrays.fill(bytes, (byte) '0');
             hunger.put(i, bytes);
-            for (int j = 0; j < 8192; j++) {
-                bytes[j] = '0';
-            }
         }
         // end::adocAlgoMemory[]
+        var duration = Duration.between(start, Instant.now());
 
         if (db) {
-            Statistics statistics = new Statistics();
-            statistics.type = Type.MEMORY;
-            statistics.parameter = bites.toString();
-            statistics.duration = Duration.between(start, Instant.now());
-            statistics.description = desc;
-            repository.persist(statistics);
+            repository.persist(statistics(Type.MEMORY, Integer.toString(bites), duration, desc));
         }
 
-        String msg = "Quarkus: Memory consumption is done with " + bites + " bites in " + Duration.between(start, Instant.now()).getNano() + " nano-seconds.";
+        var msg = "Quarkus: Memory consumption is done with %d bites in %d nano-seconds."
+            .formatted(bites, duration.toNanos());
         if (db) {
             msg += " The result is persisted in the database.";
         }
@@ -162,4 +138,31 @@ public class QuarkusResource {
         return Statistics.findAll().list();
     }
 // end::adocMethodStats[]
+
+    private static void consumeCpu(long iterations) {
+        for (var remaining = iterations; remaining > 0; remaining--) {
+            if (remaining % 20_000 == 0 && !sleepBriefly()) {
+                return;
+            }
+        }
+    }
+
+    private static boolean sleepBriefly() {
+        try {
+            Thread.sleep(Duration.ofMillis(20));
+            return true;
+        } catch (InterruptedException interruptedException) {
+            Thread.currentThread().interrupt();
+            return false;
+        }
+    }
+
+    private static Statistics statistics(Type type, String parameter, Duration duration, String description) {
+        var statistics = new Statistics();
+        statistics.type = type;
+        statistics.parameter = parameter;
+        statistics.duration = duration;
+        statistics.description = description;
+        return statistics;
+    }
 }
