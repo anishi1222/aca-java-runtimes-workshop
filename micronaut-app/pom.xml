@@ -16,6 +16,9 @@
 
   <properties>
     <packaging>jar</packaging>
+    <fasterxml-jackson-annotations.version>2.22</fasterxml-jackson-annotations.version>
+    <fasterxml-jackson.version>2.22.0</fasterxml-jackson.version>
+    <jackson.version>3.1.4</jackson.version>
     <jdk.version>25</jdk.version>
     <release.version>25</release.version>
     <azure-monitor-opentelemetry-autoconfigure.version>1.5.0</azure-monitor-opentelemetry-autoconfigure.version>
@@ -32,6 +35,21 @@
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-annotations</artifactId>
+        <version>${fasterxml-jackson-annotations.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>${fasterxml-jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${fasterxml-jackson.version}</version>
+      </dependency>
       <dependency>
         <groupId>org.testcontainers</groupId>
         <artifactId>testcontainers-bom</artifactId>
