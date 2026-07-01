@@ -10,12 +10,13 @@
   <parent>
     <groupId>io.micronaut.platform</groupId>
     <artifactId>micronaut-parent</artifactId>
-    <version>5.0.2</version>
+    <version>5.0.3</version>
     <relativePath/>
   </parent>
 
   <properties>
     <packaging>jar</packaging>
+    <micronaut.version>5.0.3</micronaut.version>
     <fasterxml-jackson-annotations.version>2.22</fasterxml-jackson-annotations.version>
     <fasterxml-jackson.version>2.22.0</fasterxml-jackson.version>
     <jackson.version>3.1.4</jackson.version>
