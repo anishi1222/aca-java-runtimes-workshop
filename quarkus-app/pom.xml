@@ -14,7 +14,7 @@
   <properties>
     <compiler-plugin.version>3.15.0</compiler-plugin.version>
     <fasterxml-jackson-annotations.version>2.22</fasterxml-jackson-annotations.version>
-    <fasterxml-jackson.version>2.22.0</fasterxml-jackson.version>
+    <fasterxml-jackson.version>2.22.1</fasterxml-jackson.version>
     <maven.compiler.release>25</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
