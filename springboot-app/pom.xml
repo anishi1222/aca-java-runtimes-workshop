@@ -21,7 +21,12 @@
 		<testcontainers.version>2.0.5</testcontainers.version>
 	</properties>
 	<dependencies>
-		<dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>[1.5.35,)</version>
+        </dependency>
+        <dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
