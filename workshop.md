@@ -75,28 +75,18 @@ The algorithm consuming CPU will be a simple loop.
 The higher the iteration, the more CPU it uses:
 
 ```java
-while (iterations > 0) {
-    if (iterations % 20000 == 0) {
-        try {
-            Thread.sleep(20);
-        } catch (InterruptedException ie) {
-        }
-    }
-    iterations--;
-}
+consumeCpu(iterations * 20_000);
 ```
 
 The algorithm consuming memory will be a simple hashmap that we will fill with bites.
 The more bits you have, the more memory it uses:
 
 ```java
-HashMap hunger = new HashMap<>();
+HashMap<Integer, byte[]> hunger = new HashMap<>();
 for (int i = 0; i < bites * 1024 * 1024; i += 8192) {
-    byte[] bytes = new byte[8192];
+    var bytes = new byte[8192];
+    Arrays.fill(bytes, (byte) '0');
     hunger.put(i, bytes);
-    for (int j = 0; j < 8192; j++) {
-        bytes[j] = '0';
-    }
 }
 ```
 
@@ -442,6 +432,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import java.lang.System.Logger;
+import java.util.Arrays;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;
@@ -484,38 +475,21 @@ That allows us to check the impact of the database on the CPU consumption.
 ```java
 @GET
 @Path("/cpu")
-public String cpu(@QueryParam("iterations") @DefaultValue("10") Long iterations,
-                  @QueryParam("db") @DefaultValue("false") Boolean db,
+public String cpu(@QueryParam("iterations") @DefaultValue("10") long iterations,
+                  @QueryParam("db") @DefaultValue("false") boolean db,
                   @QueryParam("desc") String desc) {
     LOGGER.log(INFO, "Quarkus: cpu: {0} {1} with desc {2}", iterations, db, desc);
-    Long iterationsDone = iterations;
+    var start = Instant.now();
 
-    Instant start = Instant.now();
-    if (iterations == null) {
-        iterations = 20000L;
-    } else {
-        iterations *= 20000;
-    }
-    while (iterations > 0) {
-        if (iterations % 20000 == 0) {
-            try {
-                Thread.sleep(20);
-            } catch (InterruptedException ie) {
-            }
-        }
-        iterations--;
-    }
+    consumeCpu(iterations * 20_000);
+    var duration = Duration.between(start, Instant.now());
 
     if (db) {
-        Statistics statistics = new Statistics();
-        statistics.type = Type.CPU;
-        statistics.parameter = iterations.toString();
-        statistics.duration = Duration.between(start, Instant.now());
-        statistics.description = desc;
-        repository.persist(statistics);
+        repository.persist(statistics(Type.CPU, Long.toString(iterations), duration, desc));
     }
 
-    String msg = "Quarkus: CPU consumption is done with " + iterationsDone + " iterations in " + Duration.between(start, Instant.now()).getNano() + " nano-seconds.";
+    var msg = "Quarkus: CPU consumption is done with %d iterations in %d nano-seconds."
+        .formatted(iterations, duration.toNanos());
     if (db) {
         msg += " The result is persisted in the database.";
     }
@@ -532,34 +506,26 @@ Now, add a `memory` method that consumes memory depending on a few optional para
 ```java
 @GET
 @Path("/memory")
-public String memory(@QueryParam("bites") @DefaultValue("10") Integer bites,
-                     @QueryParam("db") @DefaultValue("false") Boolean db,
+public String memory(@QueryParam("bites") @DefaultValue("10") int bites,
+                     @QueryParam("db") @DefaultValue("false") boolean db,
                      @QueryParam("desc") String desc) {
     LOGGER.log(INFO, "Quarkus: memory: {0} {1} with desc {2}", bites, db, desc);
 
-    Instant start = Instant.now();
-    if (bites == null) {
-        bites = 1;
-    }
-    HashMap hunger = new HashMap<>();
+    var start = Instant.now();
+    HashMap<Integer, byte[]> hunger = new HashMap<>();
     for (int i = 0; i < bites * 1024 * 1024; i += 8192) {
-        byte[] bytes = new byte[8192];
+        var bytes = new byte[8192];
+        Arrays.fill(bytes, (byte) '0');
         hunger.put(i, bytes);
-        for (int j = 0; j < 8192; j++) {
-            bytes[j] = '0';
-        }
     }
+    var duration = Duration.between(start, Instant.now());
 
     if (db) {
-        Statistics statistics = new Statistics();
-        statistics.type = Type.MEMORY;
-        statistics.parameter = bites.toString();
-        statistics.duration = Duration.between(start, Instant.now());
-        statistics.description = desc;
-        repository.persist(statistics);
+        repository.persist(statistics(Type.MEMORY, Integer.toString(bites), duration, desc));
     }
 
-    String msg = "Quarkus: Memory consumption is done with " + bites + " bites in " + Duration.between(start, Instant.now()).getNano() + " nano-seconds.";
+    var msg = "Quarkus: Memory consumption is done with %d bites in %d nano-seconds."
+        .formatted(bites, duration.toNanos());
     if (db) {
         msg += " The result is persisted in the database.";
     }
@@ -855,10 +821,14 @@ Open the `Application` class under the `io/containerapps/javaruntime/workshop/mi
 ```java
 package io.containerapps.javaruntime.workshop.micronaut;
 
+import io.micronaut.core.annotation.Introspected;
 import io.micronaut.runtime.Micronaut;
+import jakarta.persistence.Entity;
 
+@Introspected(packages = "io.containerapps.javaruntime.workshop.micronaut", includedAnnotations = Entity.class)
 public class Application {
 
+    @SuppressWarnings("null")
     public static void main(String[] args) {
         Micronaut.run(Application.class, args);
     }
@@ -878,11 +848,13 @@ import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.QueryValue;
 
 import java.lang.System.Logger;
+import java.util.Arrays;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.StreamSupport;
 
 import static java.lang.System.Logger.Level.INFO;
 import static java.lang.invoke.MethodHandles.lookup;
@@ -919,38 +891,21 @@ That allows us to check the impact of the database on the CPU consumption.
 
 ```java
 @Get(uri = "/cpu", produces = MediaType.TEXT_PLAIN)
-public String cpu(@QueryValue(value = "iterations", defaultValue = "10") Long iterations,
-                  @QueryValue(value = "db", defaultValue = "false") Boolean db,
+public String cpu(@QueryValue(value = "iterations", defaultValue = "10") long iterations,
+                  @QueryValue(value = "db", defaultValue = "false") boolean db,
                   @QueryValue(value = "desc", defaultValue = "") String desc) {
     LOGGER.log(INFO, "Micronaut: cpu: {0} {1} with desc {2}", iterations, db, desc);
-    Long iterationsDone = iterations;
+    var start = Instant.now();
 
-    Instant start = Instant.now();
-    if (iterations == null) {
-        iterations = 20000L;
-    } else {
-        iterations *= 20000;
-    }
-    while (iterations > 0) {
-        if (iterations % 20000 == 0) {
-            try {
-                Thread.sleep(20);
-            } catch (InterruptedException ie) {
-            }
-        }
-        iterations--;
-    }
+    consumeCpu(iterations * 20_000);
+    var duration = Duration.between(start, Instant.now());
 
     if (db) {
-        Statistics statistics = new Statistics();
-        statistics.type = Type.CPU;
-        statistics.parameter = iterations.toString();
-        statistics.duration = Duration.between(start, Instant.now());
-        statistics.description = desc;
-        repository.save(statistics);
+        repository.save(statistics(Type.CPU, Long.toString(iterations), duration, desc));
     }
 
-    String msg = "Micronaut: CPU consumption is done with " + iterationsDone + " iterations in " + Duration.between(start, Instant.now()).getNano() + " nano-seconds.";
+    var msg = "Micronaut: CPU consumption is done with %d iterations in %d nano-seconds."
+        .formatted(iterations, duration.toNanos());
     if (db) {
         msg += " The result is persisted in the database.";
     }
@@ -966,34 +921,26 @@ Now, add a `memory` method that consumes memory depending on a few optional para
 
 ```java
 @Get(uri = "/memory", produces = MediaType.TEXT_PLAIN)
-public String memory(@QueryValue(value = "bites", defaultValue = "10") Integer bites,
-                     @QueryValue(value = "db", defaultValue = "false") Boolean db,
+public String memory(@QueryValue(value = "bites", defaultValue = "10") int bites,
+                     @QueryValue(value = "db", defaultValue = "false") boolean db,
                      @QueryValue(value = "desc", defaultValue = "") String desc) {
     LOGGER.log(INFO, "Micronaut: memory: {0} {1} with desc {2}", bites, db, desc);
 
-    Instant start = Instant.now();
-    if (bites == null) {
-        bites = 1;
-    }
-    HashMap hunger = new HashMap<>();
+    var start = Instant.now();
+    Map<Integer, byte[]> hunger = new HashMap<>();
     for (int i = 0; i < bites * 1024 * 1024; i += 8192) {
-        byte[] bytes = new byte[8192];
+        var bytes = new byte[8192];
+        Arrays.fill(bytes, (byte) '0');
         hunger.put(i, bytes);
-        for (int j = 0; j < 8192; j++) {
-            bytes[j] = '0';
-        }
     }
+    var duration = Duration.between(start, Instant.now());
 
     if (db) {
-        Statistics statistics = new Statistics();
-        statistics.type = Type.MEMORY;
-        statistics.parameter = bites.toString();
-        statistics.duration = Duration.between(start, Instant.now());
-        statistics.description = desc;
-        repository.save(statistics);
+        repository.save(statistics(Type.MEMORY, Integer.toString(bites), duration, desc));
     }
 
-    String msg = "Micronaut: Memory consumption is done with " + bites + " bites in " + Duration.between(start, Instant.now()).getNano() + " nano-seconds.";
+    var msg = "Micronaut: Memory consumption is done with %d bites in %d nano-seconds."
+        .formatted(bites, duration.toNanos());
     if (db) {
         msg += " The result is persisted in the database.";
     }
@@ -1007,11 +954,7 @@ Let’s also create a method to retrieve the statistics from the database.
 @Get(uri = "/stats", produces = MediaType.APPLICATION_JSON)
 public List<Statistics> stats() {
     LOGGER.log(INFO, "Micronaut: retrieving statistics");
-    List<Statistics> result = new ArrayList<Statistics>();
-    for (Statistics stats : repository.findAll()) {
-        result.add(stats);
-    }
-    return result;
+    return StreamSupport.stream(repository.findAll().spliterator(), false).toList();
 }
 ```
 
@@ -1390,11 +1333,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.lang.System.Logger;
+import java.util.Arrays;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.StreamSupport;
 
 import static java.lang.System.Logger.Level.INFO;
 import static java.lang.invoke.MethodHandles.lookup;
@@ -1432,38 +1377,21 @@ That allows us to check the impact of the database on the CPU consumption.
 
 ```java
 @GetMapping(path = "/cpu", produces = MediaType.TEXT_PLAIN_VALUE)
-public String cpu(@RequestParam(value = "iterations", defaultValue = "10") Long iterations,
-                  @RequestParam(value = "db", defaultValue = "false") Boolean db,
+public String cpu(@RequestParam(value = "iterations", defaultValue = "10") long iterations,
+                  @RequestParam(value = "db", defaultValue = "false") boolean db,
                   @RequestParam(value = "desc", required = false) String desc) {
     LOGGER.log(INFO, "Spring Boot: cpu: {0} {1} with desc {2}", iterations, db, desc);
-    Long iterationsDone = iterations;
+    var start = Instant.now();
 
-    Instant start = Instant.now();
-    if (iterations == null) {
-        iterations = 20000L;
-    } else {
-        iterations *= 20000;
-    }
-    while (iterations > 0) {
-        if (iterations % 20000 == 0) {
-            try {
-                Thread.sleep(20);
-            } catch (InterruptedException ie) {
-            }
-        }
-        iterations--;
-    }
+    consumeCpu(iterations * 20_000);
+    var duration = Duration.between(start, Instant.now());
 
     if (db) {
-        Statistics statistics = new Statistics();
-        statistics.type = Type.CPU;
-        statistics.parameter = iterations.toString();
-        statistics.duration = Duration.between(start, Instant.now());
-        statistics.description = desc;
-        repository.save(statistics);
+        repository.save(statistics(Type.CPU, Long.toString(iterations), duration, desc));
     }
 
-    String msg = "Spring Boot: CPU consumption is done with " + iterationsDone + " iterations in " + Duration.between(start, Instant.now()).getNano() + " nano-seconds.";
+    var msg = "Spring Boot: CPU consumption is done with %d iterations in %d nano-seconds."
+        .formatted(iterations, duration.toNanos());
     if (db) {
         msg += " The result is persisted in the database.";
     }
@@ -1479,34 +1407,26 @@ Now, add a `memory` method that consumes memory depending on a few optional para
 
 ```java
 @GetMapping(path = "/memory", produces = MediaType.TEXT_PLAIN_VALUE)
-public String memory(@RequestParam(value = "bites", defaultValue = "10") Integer bites,
-                     @RequestParam(value = "db", defaultValue = "false") Boolean db,
+public String memory(@RequestParam(value = "bites", defaultValue = "10") int bites,
+                     @RequestParam(value = "db", defaultValue = "false") boolean db,
                      @RequestParam(value = "desc", required = false) String desc) {
     LOGGER.log(INFO, "Spring Boot: memory: {0} {1} with desc {2}", bites, db, desc);
 
-    Instant start = Instant.now();
-    if (bites == null) {
-        bites = 1;
-    }
-    HashMap hunger = new HashMap<>();
+    var start = Instant.now();
+    Map<Integer, byte[]> hunger = new HashMap<>();
     for (int i = 0; i < bites * 1024 * 1024; i += 8192) {
-        byte[] bytes = new byte[8192];
+        var bytes = new byte[8192];
+        Arrays.fill(bytes, (byte) '0');
         hunger.put(i, bytes);
-        for (int j = 0; j < 8192; j++) {
-            bytes[j] = '0';
-        }
     }
+    var duration = Duration.between(start, Instant.now());
 
     if (db) {
-        Statistics statistics = new Statistics();
-        statistics.type = Type.MEMORY;
-        statistics.parameter = bites.toString();
-        statistics.duration = Duration.between(start, Instant.now());
-        statistics.description = desc;
-        repository.save(statistics);
+        repository.save(statistics(Type.MEMORY, Integer.toString(bites), duration, desc));
     }
 
-    String msg = "Spring Boot: Memory consumption is done with " + bites + " bites in " + Duration.between(start, Instant.now()).getNano() + " nano-seconds.";
+    var msg = "Spring Boot: Memory consumption is done with %d bites in %d nano-seconds."
+        .formatted(bites, duration.toNanos());
     if (db) {
         msg += " The result is persisted in the database.";
     }
@@ -1520,11 +1440,7 @@ Let’s also create a method to retrieve the statistics from the database.
 @GetMapping(path = "/stats", produces = MediaType.APPLICATION_JSON_VALUE)
 public List<Statistics> stats() {
     LOGGER.log(INFO, "Spring Boot: retrieving statistics");
-    List<Statistics> result = new ArrayList<Statistics>();
-    for (Statistics stats : repository.findAll()) {
-        result.add(stats);
-    }
-    return result;
+    return StreamSupport.stream(repository.findAll().spliterator(), false).toList();
 }
 ```
 
@@ -2345,20 +2261,20 @@ jobs:
     # part of the job.
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Java
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'microsoft'
           java-version: '25'
           cache: 'maven'
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v4
 
       - name: Log in to container registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v4
         with:
           registry: ${{ env.REGISTRY_URL }}
           username: ${{ secrets.REGISTRY_USERNAME }}
@@ -2431,7 +2347,7 @@ Add the following steps to the `build` job:
 
 ```yaml
       - name: Build and push Quarkus Java image to registry
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v7
         with:
           push: true
           tags: ${{ env.REGISTRY_URL }}/${{ env.PROJECT }}/${{ env.QUARKUS_APP }}:${{ github.sha }}
@@ -2439,7 +2355,7 @@ Add the following steps to the `build` job:
           context: ./quarkus-app/
 
       - name: Build and push Micronaut Java image to registry
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v7
         with:
           push: true
           tags: ${{ env.REGISTRY_URL }}/${{ env.PROJECT }}/${{ env.MICRONAUT_APP }}:${{ github.sha }}
@@ -2447,7 +2363,7 @@ Add the following steps to the `build` job:
           context: ./micronaut-app/
 
       - name: Build and push Spring Boot Java image to registry
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v7
         with:
           push: true
           tags: ${{ env.REGISTRY_URL }}/${{ env.PROJECT }}/${{ env.SPRING_APP }}:${{ github.sha }}
@@ -2483,13 +2399,13 @@ Add these lines after the `build` job:
     steps:
       # Log in to Azure to be able to deploy our apps
       - name: Azure Login
-        uses: azure/login@v1
+        uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       # Use the Azure CLI to deploy our apps
       - name: Deploy to Azure Container Apps
-        uses: azure/CLI@v1
+        uses: azure/CLI@v2
         with:
           inlineScript: |
             az config set extension.use_dynamic_install=yes_without_prompt
@@ -3416,7 +3332,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - uses: graalvm/setup-graalvm@v1
         with:
           version: 'latest'
@@ -3424,7 +3340,7 @@ jobs:
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Log in to container registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v4
         with:
           registry: ${{ env.REGISTRY_URL }}
           username: ${{ secrets.REGISTRY_USERNAME }}
@@ -3433,18 +3349,18 @@ jobs:
         run: |
           cd quarkus-app && ./mvnw -Pnative package
       - name: Build quarkus-app native Docker image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v7
         with:
           push: true
           tags: ${{ env.REGISTRY_URL }}/${{ env.PROJECT }}/quarkus-app-native:${{ github.sha }}
           file: ./quarkus-app/src/main/docker/Dockerfile.native
           context: ./quarkus-app/
       - name: Azure Login
-        uses: azure/login@v1
+        uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       - name: Deploy quarkus-app native Docker image to Azure Container Apps
-        uses: azure/CLI@v1
+        uses: azure/CLI@v2
         with:
           inlineScript: |
             az config set extension.use_dynamic_install=yes_without_prompt
@@ -3532,7 +3448,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - uses: graalvm/setup-graalvm@v1
         with:
           version: 'latest'
@@ -3540,7 +3456,7 @@ jobs:
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Log in to container registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v4
         with:
           registry: ${{ env.REGISTRY_URL }}
           username: ${{ secrets.REGISTRY_USERNAME }}
@@ -3549,18 +3465,18 @@ jobs:
         run: |
           cd micronaut-app && ./mvnw -Pnative native:compile
       - name: Build micronaut-app native Docker image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v7
         with:
           push: true
           tags: ${{ env.REGISTRY_URL }}/${{ env.PROJECT }}/micronaut-app-native:${{ github.sha }}
           file: ./micronaut-app/src/main/docker/Dockerfile.native
           context: ./micronaut-app/
       - name: Azure Login
-        uses: azure/login@v1
+        uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       - name: Deploy micronaut-app native Docker image to Azure Container Apps
-        uses: azure/CLI@v1
+        uses: azure/CLI@v2
         with:
           inlineScript: |
             az config set extension.use_dynamic_install=yes_without_prompt
@@ -3642,7 +3558,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - uses: graalvm/setup-graalvm@v1
         with:
           version: 'latest'
@@ -3650,7 +3566,7 @@ jobs:
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Log in to container registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v4
         with:
           registry: ${{ env.REGISTRY_URL }}
           username: ${{ secrets.REGISTRY_USERNAME }}
@@ -3659,18 +3575,18 @@ jobs:
         run: |
           cd springboot-app && ./mvnw -Pnative native:compile
       - name: Build springboot-app native Docker image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v7
         with:
           push: true
           tags: ${{ env.REGISTRY_URL }}/${{ env.PROJECT }}/springboot-app-native:${{ github.sha }}
           file: ./springboot-app/src/main/docker/Dockerfile.native
           context: ./springboot-app/
       - name: Azure Login
-        uses: azure/login@v1
+        uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       - name: Deploy springboot-app native Docker image to Azure Container Apps
-        uses: azure/CLI@v1
+        uses: azure/CLI@v2
         with:
           inlineScript: |
             az config set extension.use_dynamic_install=yes_without_prompt
