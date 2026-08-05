@@ -16,8 +16,8 @@
 	<properties>
 		<jackson-2-bom.version>2.22.1</jackson-2-bom.version>
 		<java.version>25</java.version>
-		<postgresql.version>42.7.11</postgresql.version>
-		<spring-cloud-azure.version>7.3.0</spring-cloud-azure.version>
+		<postgresql.version>42.7.13</postgresql.version>
+		<spring-cloud-azure.version>7.4.0</spring-cloud-azure.version>
 		<testcontainers.version>2.0.5</testcontainers.version>
 	</properties>
 	<dependencies>
