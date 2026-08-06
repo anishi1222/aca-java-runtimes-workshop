@@ -13,9 +13,9 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <asciidoctor.maven.plugin.version>2.2.3</asciidoctor.maven.plugin.version>
         <asciidoctorj.diagram.version>2.2.4</asciidoctorj.diagram.version>
-        <asciidoctorj.plantuml.version>1.2022.14</asciidoctorj.plantuml.version>
-        <plantuml.maven.plugin.version>1.2</plantuml.maven.plugin.version>
-        <plantuml.version>1.2022.14</plantuml.version>
+        <asciidoctorj.plantuml.version>1.2026.2</asciidoctorj.plantuml.version>
+        <plantuml.maven.plugin.version>0.2.14</plantuml.maven.plugin.version>
+        <plantuml.version>1.2026.1</plantuml.version>
     </properties>
 
     <build>
@@ -62,17 +62,18 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>com.github.jeluard</groupId>
+                <groupId>com.github.davidmoten</groupId>
                 <artifactId>plantuml-maven-plugin</artifactId>
                 <version>${plantuml.maven.plugin.version}</version>
                 <configuration>
                     <outputDirectory>${basedir}/src/docs/asciidoc/images</outputDirectory>
-                    <sourceFiles>
+                    <generateMarkdownIndex>false</generateMarkdownIndex>
+                    <sources>
                         <directory>${basedir}/src/docs/plantuml</directory>
                         <includes>
                             <include>**/*.puml</include>
                         </includes>
-                    </sourceFiles>
+                    </sources>
                 </configuration>
                 <dependencies>
                     <dependency>
