@@ -10,13 +10,13 @@
   <parent>
     <groupId>io.micronaut.platform</groupId>
     <artifactId>micronaut-parent</artifactId>
-    <version>5.1.0</version>
+    <version>5.1.1</version>
     <relativePath/>
   </parent>
 
   <properties>
     <packaging>jar</packaging>
-    <micronaut.version>5.1.0</micronaut.version>
+    <micronaut.version>5.1.1</micronaut.version>
     <fasterxml-jackson-annotations.version>2.22</fasterxml-jackson-annotations.version>
     <fasterxml-jackson.version>2.22.1</fasterxml-jackson.version>
     <jackson.version>3.1.5</jackson.version>
@@ -24,7 +24,6 @@
     <release.version>25</release.version>
     <azure-monitor-opentelemetry-autoconfigure.version>1.5.0</azure-monitor-opentelemetry-autoconfigure.version>
     <micronaut.runtime>netty</micronaut.runtime>
-    <netty.version>4.2.17.Final</netty.version>
     <exec.mainClass>io.containerapps.javaruntime.workshop.micronaut.Application</exec.mainClass>
   </properties>
 

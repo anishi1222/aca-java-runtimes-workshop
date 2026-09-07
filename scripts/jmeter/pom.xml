@@ -7,7 +7,13 @@
   <version>1.0</version>
   <name>Azure Container Apps and Java Runtimes Workshop :: JMeter Scripts</name>
   <properties>
-    <jmeter-plugin.version>3.6.1</jmeter-plugin.version>
+    <jmeter-plugin.version>3.8.0</jmeter-plugin.version>
+    <jmeter.version>5.6.3</jmeter.version>
+    <jackson.version>2.22.1</jackson.version>
+    <logback.version>1.5.37</logback.version>
+    <slf4j.version>2.0.17</slf4j.version>
+    <log4j.version>2.25.3</log4j.version>
+    <batik.version>1.19</batik.version>
   </properties>
   <build>
     <plugins>
@@ -15,6 +21,130 @@
         <groupId>com.lazerycode.jmeter</groupId>
         <artifactId>jmeter-maven-plugin</artifactId>
         <version>${jmeter-plugin.version}</version>
+        <!-- Plugin dependencies are isolated from project dependency management. -->
+        <dependencies>
+          <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.18.0</version>
+          </dependency>
+          <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <!-- Jackson 2.22.1's BOM specifies the patchless annotations release. -->
+            <version>2.22</version>
+          </dependency>
+          <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-csv</artifactId>
+            <version>${jackson.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>com.jayway.jsonpath</groupId>
+            <artifactId>json-path</artifactId>
+            <version>2.9.0</version>
+          </dependency>
+          <dependency>
+            <groupId>net.minidev</groupId>
+            <artifactId>json-smart</artifactId>
+            <version>2.5.2</version>
+          </dependency>
+          <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>${logback.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <!-- The forked JMeter engine has a separate dependency set. -->
+          <excludedArtifacts>
+            <exclusion>org.apache.tika:tika-parsers</exclusion>
+            <exclusion>org.apache.logging.log4j:log4j-slf4j-impl</exclusion>
+          </excludedArtifacts>
+          <!-- Retain every default module and resolve Tika without its test classifiers. -->
+          <jmeterArtifacts>
+            <artifact>org.apache.jmeter:ApacheJMeter:${jmeter.version}</artifact>
+            <artifact>org.apache.jmeter:ApacheJMeter_bolt:${jmeter.version}</artifact>
+            <artifact>org.apache.jmeter:ApacheJMeter_components:${jmeter.version}</artifact>
+            <artifact>org.apache.jmeter:ApacheJMeter_config:${jmeter.version}</artifact>
+            <artifact>org.apache.jmeter:ApacheJMeter_core:${jmeter.version}</artifact>
+            <artifact>org.apache.jmeter:ApacheJMeter_ftp:${jmeter.version}</artifact>
+            <artifact>org.apache.jmeter:ApacheJMeter_functions:${jmeter.version}</artifact>
+            <artifact>org.apache.jmeter:ApacheJMeter_http:${jmeter.version}</artifact>
+            <artifact>org.apache.jmeter:ApacheJMeter_java:${jmeter.version}</artifact>
+            <artifact>org.apache.jmeter:ApacheJMeter_jdbc:${jmeter.version}</artifact>
+            <artifact>org.apache.jmeter:ApacheJMeter_jms:${jmeter.version}</artifact>
+            <artifact>org.apache.jmeter:ApacheJMeter_junit:${jmeter.version}</artifact>
+            <artifact>org.apache.jmeter:ApacheJMeter_ldap:${jmeter.version}</artifact>
+            <artifact>org.apache.jmeter:ApacheJMeter_mail:${jmeter.version}</artifact>
+            <artifact>org.apache.jmeter:ApacheJMeter_mongodb:${jmeter.version}</artifact>
+            <artifact>org.apache.jmeter:ApacheJMeter_native:${jmeter.version}</artifact>
+            <artifact>org.apache.jmeter:ApacheJMeter_tcp:${jmeter.version}</artifact>
+            <artifact>org.apache.jmeter:jorphan:${jmeter.version}</artifact>
+            <artifact>org.apache.tika:tika-parsers-standard-package:3.2.3</artifact>
+          </jmeterArtifacts>
+          <!-- Only affects testPlanLibraries; jmeterArtifacts (including Tika) still resolve transitively. -->
+          <downloadLibraryDependencies>false</downloadLibraryDependencies>
+          <!-- Newer libraries replace older copies in JMeter's lib directory. -->
+          <testPlanLibraries>
+            <artifact>com.fasterxml.jackson.core:jackson-core:${jackson.version}</artifact>
+            <artifact>com.fasterxml.jackson.core:jackson-databind:${jackson.version}</artifact>
+            <artifact>com.fasterxml.jackson.core:jackson-annotations:2.22</artifact>
+            <artifact>org.apache.commons:commons-lang3:3.18.0</artifact>
+            <artifact>com.jayway.jsonpath:json-path:2.9.0</artifact>
+            <artifact>net.minidev:json-smart:2.5.2</artifact>
+            <artifact>net.minidev:accessors-smart:2.5.2</artifact>
+            <artifact>org.ow2.asm:asm:9.7.1</artifact>
+            <artifact>com.thoughtworks.xstream:xstream:1.4.21</artifact>
+            <artifact>dnsjava:dnsjava:3.6.3</artifact>
+            <artifact>org.apache.xmlgraphics:batik-anim:${batik.version}</artifact>
+            <artifact>org.apache.xmlgraphics:batik-awt-util:${batik.version}</artifact>
+            <artifact>org.apache.xmlgraphics:batik-bridge:${batik.version}</artifact>
+            <artifact>org.apache.xmlgraphics:batik-constants:${batik.version}</artifact>
+            <artifact>org.apache.xmlgraphics:batik-css:${batik.version}</artifact>
+            <artifact>org.apache.xmlgraphics:batik-dom:${batik.version}</artifact>
+            <artifact>org.apache.xmlgraphics:batik-ext:${batik.version}</artifact>
+            <artifact>org.apache.xmlgraphics:batik-gvt:${batik.version}</artifact>
+            <artifact>org.apache.xmlgraphics:batik-i18n:${batik.version}</artifact>
+            <artifact>org.apache.xmlgraphics:batik-parser:${batik.version}</artifact>
+            <artifact>org.apache.xmlgraphics:batik-script:${batik.version}</artifact>
+            <artifact>org.apache.xmlgraphics:batik-shared-resources:${batik.version}</artifact>
+            <artifact>org.apache.xmlgraphics:batik-svg-dom:${batik.version}</artifact>
+            <artifact>org.apache.xmlgraphics:batik-svggen:${batik.version}</artifact>
+            <artifact>org.apache.xmlgraphics:batik-transcoder:${batik.version}</artifact>
+            <artifact>org.apache.xmlgraphics:batik-codec:${batik.version}</artifact>
+            <artifact>org.apache.xmlgraphics:batik-util:${batik.version}</artifact>
+            <artifact>org.apache.xmlgraphics:batik-xml:${batik.version}</artifact>
+            <artifact>org.apache.xmlgraphics:xmlgraphics-commons:2.11</artifact>
+            <artifact>org.apache.tika:tika-core:3.2.3</artifact>
+            <artifact>org.apache.logging.log4j:log4j-api:${log4j.version}</artifact>
+            <artifact>org.apache.logging.log4j:log4j-core:${log4j.version}</artifact>
+            <artifact>org.apache.logging.log4j:log4j-slf4j2-impl:${log4j.version}</artifact>
+            <artifact>org.apache.logging.log4j:log4j-1.2-api:${log4j.version}</artifact>
+            <artifact>org.slf4j:slf4j-api:${slf4j.version}</artifact>
+            <artifact>org.slf4j:jcl-over-slf4j:${slf4j.version}</artifact>
+          </testPlanLibraries>
+        </configuration>
         <executions>
           <!-- Generate JMeter configuration -->
           <execution>
