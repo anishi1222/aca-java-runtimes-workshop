@@ -117,6 +117,8 @@
             <artifact>org.ow2.asm:asm:9.7.1</artifact>
             <artifact>com.thoughtworks.xstream:xstream:1.4.21</artifact>
             <artifact>dnsjava:dnsjava:3.6.3</artifact>
+            <!-- The driver bundles shaded Netty, so its containing artifact must be patched. -->
+            <artifact>org.neo4j.driver:neo4j-java-driver:4.4.27</artifact>
             <artifact>org.apache.xmlgraphics:batik-anim:${batik.version}</artifact>
             <artifact>org.apache.xmlgraphics:batik-awt-util:${batik.version}</artifact>
             <artifact>org.apache.xmlgraphics:batik-bridge:${batik.version}</artifact>
