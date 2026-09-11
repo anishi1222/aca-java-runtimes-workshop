@@ -3,10 +3,10 @@ name: Build and deploy Spring Boot native image
 on:
   push:
     branches: [main]
-    workflow_dispatch:
     paths:
       - .github/workflows/*.yml
       - springboot-app/**
+  workflow_dispatch:
 
 permissions:
   contents: read

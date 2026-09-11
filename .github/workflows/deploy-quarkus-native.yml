@@ -3,10 +3,10 @@ name: Build and deploy Quarkus native image
 on:
   push:
     branches: [main]
-    workflow_dispatch:
     paths:
       - .github/workflows/*.yml
       - quarkus-app/**
+  workflow_dispatch:
 
 permissions:
   contents: read
