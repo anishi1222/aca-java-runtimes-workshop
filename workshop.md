@@ -2261,20 +2261,20 @@ jobs:
     # part of the job.
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Set up Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3 # v4
         with:
           distribution: 'microsoft'
           java-version: '25'
           cache: 'maven'
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4
+        uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e # v4
 
       - name: Log in to container registry
-        uses: docker/login-action@v4
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4
         with:
           registry: ${{ env.REGISTRY_URL }}
           username: ${{ secrets.REGISTRY_USERNAME }}
@@ -2347,7 +2347,7 @@ Add the following steps to the `build` job:
 
 ```yaml
       - name: Build and push Quarkus Java image to registry
-        uses: docker/build-push-action@v7
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7
         with:
           push: true
           tags: ${{ env.REGISTRY_URL }}/${{ env.PROJECT }}/${{ env.QUARKUS_APP }}:${{ github.sha }}
@@ -2355,7 +2355,7 @@ Add the following steps to the `build` job:
           context: ./quarkus-app/
 
       - name: Build and push Micronaut Java image to registry
-        uses: docker/build-push-action@v7
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7
         with:
           push: true
           tags: ${{ env.REGISTRY_URL }}/${{ env.PROJECT }}/${{ env.MICRONAUT_APP }}:${{ github.sha }}
@@ -2363,7 +2363,7 @@ Add the following steps to the `build` job:
           context: ./micronaut-app/
 
       - name: Build and push Spring Boot Java image to registry
-        uses: docker/build-push-action@v7
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7
         with:
           push: true
           tags: ${{ env.REGISTRY_URL }}/${{ env.PROJECT }}/${{ env.SPRING_APP }}:${{ github.sha }}
@@ -2399,13 +2399,13 @@ Add these lines after the `build` job:
     steps:
       # Log in to Azure to be able to deploy our apps
       - name: Azure Login
-        uses: azure/login@v2
+        uses: azure/login@7184910d9eb2b1c5e48f7073824a90609bb9b6d6 # v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       # Use the Azure CLI to deploy our apps
       - name: Deploy to Azure Container Apps
-        uses: azure/CLI@v2
+        uses: azure/CLI@9f7ce6f37c31b777ec6c6b6d1dfe7db79f497956 # v2
         with:
           inlineScript: |
             az config set extension.use_dynamic_install=yes_without_prompt
@@ -3332,15 +3332,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
-      - uses: graalvm/setup-graalvm@v1
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: graalvm/setup-graalvm@0426e2e191540e8514dff98dc52a5f5146a2a276 # v1
         with:
           version: 'latest'
           java-version: '25'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Log in to container registry
-        uses: docker/login-action@v4
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4
         with:
           registry: ${{ env.REGISTRY_URL }}
           username: ${{ secrets.REGISTRY_USERNAME }}
@@ -3349,18 +3349,18 @@ jobs:
         run: |
           cd quarkus-app && ./mvnw -Pnative package
       - name: Build quarkus-app native Docker image
-        uses: docker/build-push-action@v7
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7
         with:
           push: true
           tags: ${{ env.REGISTRY_URL }}/${{ env.PROJECT }}/quarkus-app-native:${{ github.sha }}
           file: ./quarkus-app/src/main/docker/Dockerfile.native
           context: ./quarkus-app/
       - name: Azure Login
-        uses: azure/login@v2
+        uses: azure/login@7184910d9eb2b1c5e48f7073824a90609bb9b6d6 # v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       - name: Deploy quarkus-app native Docker image to Azure Container Apps
-        uses: azure/CLI@v2
+        uses: azure/CLI@9f7ce6f37c31b777ec6c6b6d1dfe7db79f497956 # v2
         with:
           inlineScript: |
             az config set extension.use_dynamic_install=yes_without_prompt
@@ -3448,15 +3448,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
-      - uses: graalvm/setup-graalvm@v1
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: graalvm/setup-graalvm@0426e2e191540e8514dff98dc52a5f5146a2a276 # v1
         with:
           version: 'latest'
           java-version: '25'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Log in to container registry
-        uses: docker/login-action@v4
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4
         with:
           registry: ${{ env.REGISTRY_URL }}
           username: ${{ secrets.REGISTRY_USERNAME }}
@@ -3465,18 +3465,18 @@ jobs:
         run: |
           cd micronaut-app && ./mvnw -Pnative native:compile
       - name: Build micronaut-app native Docker image
-        uses: docker/build-push-action@v7
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7
         with:
           push: true
           tags: ${{ env.REGISTRY_URL }}/${{ env.PROJECT }}/micronaut-app-native:${{ github.sha }}
           file: ./micronaut-app/src/main/docker/Dockerfile.native
           context: ./micronaut-app/
       - name: Azure Login
-        uses: azure/login@v2
+        uses: azure/login@7184910d9eb2b1c5e48f7073824a90609bb9b6d6 # v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       - name: Deploy micronaut-app native Docker image to Azure Container Apps
-        uses: azure/CLI@v2
+        uses: azure/CLI@9f7ce6f37c31b777ec6c6b6d1dfe7db79f497956 # v2
         with:
           inlineScript: |
             az config set extension.use_dynamic_install=yes_without_prompt
@@ -3558,15 +3558,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
-      - uses: graalvm/setup-graalvm@v1
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: graalvm/setup-graalvm@0426e2e191540e8514dff98dc52a5f5146a2a276 # v1
         with:
           version: 'latest'
           java-version: '25'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Log in to container registry
-        uses: docker/login-action@v4
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4
         with:
           registry: ${{ env.REGISTRY_URL }}
           username: ${{ secrets.REGISTRY_USERNAME }}
@@ -3575,18 +3575,18 @@ jobs:
         run: |
           cd springboot-app && ./mvnw -Pnative native:compile
       - name: Build springboot-app native Docker image
-        uses: docker/build-push-action@v7
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7
         with:
           push: true
           tags: ${{ env.REGISTRY_URL }}/${{ env.PROJECT }}/springboot-app-native:${{ github.sha }}
           file: ./springboot-app/src/main/docker/Dockerfile.native
           context: ./springboot-app/
       - name: Azure Login
-        uses: azure/login@v2
+        uses: azure/login@7184910d9eb2b1c5e48f7073824a90609bb9b6d6 # v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       - name: Deploy springboot-app native Docker image to Azure Container Apps
-        uses: azure/CLI@v2
+        uses: azure/CLI@9f7ce6f37c31b777ec6c6b6d1dfe7db79f497956 # v2
         with:
           inlineScript: |
             az config set extension.use_dynamic_install=yes_without_prompt
