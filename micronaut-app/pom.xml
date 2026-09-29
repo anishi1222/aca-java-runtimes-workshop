@@ -21,7 +21,7 @@
     <fasterxml-jackson.version>3.23</fasterxml-jackson.version>
     <jdk.version>25</jdk.version>
     <release.version>25</release.version>
-    <azure-monitor-opentelemetry-autoconfigure.version>1.5.0</azure-monitor-opentelemetry-autoconfigure.version>
+    <azure-monitor-opentelemetry-autoconfigure.version>1.7.0</azure-monitor-opentelemetry-autoconfigure.version>
     <micronaut.runtime>netty</micronaut.runtime>
     <exec.mainClass>io.containerapps.javaruntime.workshop.micronaut.Application</exec.mainClass>
   </properties>
