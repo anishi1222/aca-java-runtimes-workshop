@@ -9,11 +9,13 @@
   <properties>
     <jmeter-plugin.version>3.8.0</jmeter-plugin.version>
     <jmeter.version>5.6.3</jmeter.version>
-    <jackson.version>2.22.1</jackson.version>
+    <jackson.version>2.22.3</jackson.version>
     <logback.version>1.5.37</logback.version>
     <slf4j.version>2.0.17</slf4j.version>
     <log4j.version>2.25.5</log4j.version>
     <batik.version>1.19</batik.version>
+    <bouncycastle.version>1.85</bouncycastle.version>
+    <httpcore5.version>5.4.4</httpcore5.version>
   </properties>
   <build>
     <plugins>
@@ -41,7 +43,7 @@
           <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
-            <!-- Jackson 2.22.1's BOM specifies the patchless annotations release. -->
+            <!-- Jackson 2.22.3's BOM specifies the patchless annotations release. -->
             <version>2.22</version>
           </dependency>
           <dependency>
@@ -139,6 +141,14 @@
             <artifact>org.apache.xmlgraphics:batik-xml:${batik.version}</artifact>
             <artifact>org.apache.xmlgraphics:xmlgraphics-commons:2.11</artifact>
             <artifact>org.apache.tika:tika-core:3.2.3</artifact>
+            <artifact>org.bouncycastle:bcprov-jdk18on:${bouncycastle.version}</artifact>
+            <artifact>org.bouncycastle:bcpkix-jdk18on:${bouncycastle.version}</artifact>
+            <artifact>org.bouncycastle:bcutil-jdk18on:${bouncycastle.version}</artifact>
+            <artifact>org.bouncycastle:bcjmail-jdk18on:${bouncycastle.version}</artifact>
+            <artifact>org.apache.httpcomponents.client5:httpclient5:5.6.4</artifact>
+            <artifact>org.apache.httpcomponents.core5:httpcore5:${httpcore5.version}</artifact>
+            <artifact>org.apache.httpcomponents.core5:httpcore5-h2:${httpcore5.version}</artifact>
+            <artifact>org.freemarker:freemarker:2.3.35</artifact>
             <artifact>org.apache.logging.log4j:log4j-api:${log4j.version}</artifact>
             <artifact>org.apache.logging.log4j:log4j-core:${log4j.version}</artifact>
             <artifact>org.apache.logging.log4j:log4j-slf4j2-impl:${log4j.version}</artifact>
