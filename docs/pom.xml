@@ -15,7 +15,7 @@
         <asciidoctorj.diagram.version>3.2.1</asciidoctorj.diagram.version>
         <asciidoctorj.plantuml.version>1.2026.2</asciidoctorj.plantuml.version>
         <plantuml.maven.plugin.version>0.2.15</plantuml.maven.plugin.version>
-        <plantuml.version>1.2026.8</plantuml.version>
+        <plantuml.version>1.2026.9</plantuml.version>
     </properties>
 
     <build>

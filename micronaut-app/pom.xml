@@ -19,7 +19,7 @@
     <micronaut.version>$5.2.0</micronaut.version>
     <fasterxml-jackson-annotations.version>2.22</fasterxml-jackson-annotations.version>
     <fasterxml-jackson.version>3.2.3</fasterxml-jackson.version>
-    <fasterxml-jackson2.version>2.22.3</fasterxml-jackson2.version>
+    <fasterxml-jackson2.version>2.22.4</fasterxml-jackson2.version>
     <jdk.version>25</jdk.version>
     <release.version>25</release.version>
     <azure-monitor-opentelemetry-autoconfigure.version>1.8.0</azure-monitor-opentelemetry-autoconfigure.version>
