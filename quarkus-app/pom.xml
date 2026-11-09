@@ -15,6 +15,7 @@
     <compiler-plugin.version>3.16.0</compiler-plugin.version>
     <fasterxml-jackson-annotations.version>2.22</fasterxml-jackson-annotations.version>
     <fasterxml-jackson.version>2.22.4</fasterxml-jackson.version>
+    <guava.version>33.7.2-jre</guava.version>
     <maven.compiler.release>25</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -40,6 +41,11 @@
         <groupId>io.opentelemetry</groupId>
         <artifactId>opentelemetry-api</artifactId>
         <version>${opentelemetry.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${guava.version}</version>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>

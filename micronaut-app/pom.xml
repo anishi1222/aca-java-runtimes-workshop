@@ -23,6 +23,7 @@
     <jdk.version>25</jdk.version>
     <release.version>25</release.version>
     <azure-monitor-opentelemetry-autoconfigure.version>1.8.0</azure-monitor-opentelemetry-autoconfigure.version>
+    <opentelemetry.version>1.67.0</opentelemetry.version>
     <micronaut.runtime>netty</micronaut.runtime>
     <exec.mainClass>io.containerapps.javaruntime.workshop.micronaut.Application</exec.mainClass>
   </properties>
@@ -36,6 +37,14 @@
 
   <dependencyManagement>
     <dependencies>
+      <!-- Overrides the OpenTelemetry versions pinned by the Micronaut platform BOMs. -->
+      <dependency>
+        <groupId>io.opentelemetry</groupId>
+        <artifactId>opentelemetry-bom-alpha</artifactId>
+        <version>${opentelemetry.version}-alpha</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-annotations</artifactId>
