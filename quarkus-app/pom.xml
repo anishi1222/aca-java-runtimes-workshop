@@ -13,13 +13,13 @@
 
   <properties>
     <compiler-plugin.version>3.16.0</compiler-plugin.version>
-    <fasterxml-jackson-annotations.version>2.22</fasterxml-jackson-annotations.version>
-    <fasterxml-jackson.version>2.22.4</fasterxml-jackson.version>
-    <guava.version>33.7.2-jre</guava.version>
+    <fasterxml-jackson-annotations.version>2.23</fasterxml-jackson-annotations.version>
+    <fasterxml-jackson.version>2.23.0</fasterxml-jackson.version>
+    <guava.version>33.8.0-jre</guava.version>
     <maven.compiler.release>25</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <opentelemetry.version>1.67.0</opentelemetry.version>
+    <opentelemetry.version>1.68.0</opentelemetry.version>
     <quarkus-opentelemetry-exporter-azure.version>3.40.1.0</quarkus-opentelemetry-exporter-azure.version>
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
